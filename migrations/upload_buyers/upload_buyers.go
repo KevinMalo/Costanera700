@@ -2,7 +2,6 @@ package upload_buyers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/dgraph-io/dgo/v2/protos/api"
 	"github.com/kevinmalo/Costanera700/internal/database"
@@ -49,21 +48,16 @@ func SetBuyers()  {
 		log.Fatal(readErr)
 	}
 
-	var buyers = []Buyer{}
+	jsonBuyer := body
 
-	err = json.Unmarshal(body, &buyers)
-	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
-	}
-
-	//return body
+	//COMMIT
 	dgraphClient := database.NewClient()
 
 	mu := &api.Mutation{
 		CommitNow: true,
 	}
 
-	mu.SetJson = body
+	mu.SetJson = jsonBuyer
 	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
 	if err != nil {
 		log.Fatal(err)
@@ -72,22 +66,14 @@ func SetBuyers()  {
 	fmt.Println(assigned)
 }
 
-//func SetBuyers() {
-//
-//	pb := GetBuyersData()
-//
-//	dgraphClient := database.NewClient()
-//
-//	mu := &api.Mutation{
-//		CommitNow: true,
-//	}
-//
-//	mu.SetJson = pb
-//	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	fmt.Println(assigned)
-//
-//}
+/*
+QUERY
+{
+  buyers(func: has(name)) {
+    uid
+    id
+    name
+    age
+  }
+}
+*/
