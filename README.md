@@ -16,6 +16,10 @@ vendor --> go mod vendor
 Contains commons and utils services/library
 
 #### DOCS
+Golang
+
+https://golang.org/ref/spec
+
 IDE Go modules
 
 https://www.jetbrains.com/help/go/create-a-project-with-go-modules-integration.html#working-with-go-modules

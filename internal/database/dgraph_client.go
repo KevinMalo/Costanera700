@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"github.com/dgraph-io/dgo/v2"
 	"github.com/dgraph-io/dgo/v2/protos/api"
 	"google.golang.org/grpc"
@@ -12,7 +11,6 @@ import (
 var (
 	host = "192.168.100.100"
 	port ="9080"
-	ctx = context.Background()
 )
 
 func NewClient() *dgo.Dgraph {
