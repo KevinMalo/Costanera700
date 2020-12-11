@@ -9,10 +9,6 @@ func main()  {
 
 	_ = logs.InitLogger()
 
-	mux := Routes()
-	server := NewServer(mux)
-	server.Run()
-
 	// Set all buyers
 	//upload_buyers.SetBuyers()
 
@@ -21,5 +17,10 @@ func main()  {
 
 	// Set all transactions.
 	//upload_transactions.SetTransactions()
+
+	//Run server
+	mux := Routes()
+	server := NewServer(mux)
+	server.Run()
 }
 

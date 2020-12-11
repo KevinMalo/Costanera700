@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/kevinmalo/Costanera700/gadgets/buyers/models"
 	"net/http"
 )
 
@@ -16,7 +17,11 @@ func Routes() *chi.Mux {
 		middleware.Recoverer, // recover if a panic occurs
 		)
 
-	mux.Post("/buyer", nil)
+	//BuyerRoute
+	mux.Post("/buyers", nil)
+	mux.Get("/buyers", buyerHandler)
+
+	//TEST
 	mux.Get("/hello", helloHandler)
 
 	return mux
@@ -30,4 +35,13 @@ func helloHandler(w http.ResponseWriter, r *http.Request)  {
 	res := map[string]interface{}{"message":"hello world"}
 
 	_ = json.NewEncoder(w).Encode(res)
+}
+
+func buyerHandler(w http.ResponseWriter, r *http.Request)  {
+
+	buyers := models.GetBuyers()
+
+	w.Header().Set("Content-Type","application/json")
+	w.Write(buyers)
+
 }

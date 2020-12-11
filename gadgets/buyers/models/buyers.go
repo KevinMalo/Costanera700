@@ -1,16 +1,36 @@
 package models
 
-import "errors"
+import (
+	"context"
+	"errors"
+	"github.com/kevinmalo/Costanera700/internal/database"
+	"log"
+)
 
-const maxLengthInId = 8
-const maxLengthInName = 100
-const maxLengthInAge = 255
+var ctx = context.Background()
+
+const (
+	maxLengthInId = 8
+	maxLengthInName = 100
+	maxLengthInAge = 255
+	q = `
+	{
+	  buyers(func: has(name)) {
+		uid
+		id
+		name
+		age
+	  }
+	}
+	`
+)
+
 
 //Buyer model structure for buyers
 type Buyer struct {
-	Id   string	// max 8 chars
+	Id   string // max 8 chars
 	Name string // max 100 chars
-	Age  uint8 // 0 to 255
+	Age  uint8  // 0 to 255
 }
 
 //CreateBuyerCMD command to create a new review
@@ -34,4 +54,18 @@ func (cmd *CreateBuyerCMD) validate() error {
 	}
 
 	return nil
+}
+
+func GetBuyers() []byte {
+
+	dgraphClient := database.NewClient()
+	txn := dgraphClient.NewTxn()
+
+	resp, err := txn.Query(context.Background(), q)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return resp.Json
+
 }
