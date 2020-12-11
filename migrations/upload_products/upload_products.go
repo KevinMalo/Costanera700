@@ -1,11 +1,8 @@
 package upload_products
 
 import (
-	"context"
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
-	"github.com/dgraph-io/dgo/v2/protos/api"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"io"
 	"log"
@@ -18,8 +15,6 @@ type Product struct {
 	Name  string `json:"name"`
 	Price int    `json:"price"`
 }
-
-var ctx = context.Background()
 
 func SetBuyers() {
 
@@ -74,30 +69,11 @@ func SetBuyers() {
 		log.Fatal("error al convertir a JSON: " + err.Error())
 	}
 
-	fmt.Printf("%s", jsonProduct)
-
 	//Commit database
-	Commit(jsonProduct)
+	database.Commit(jsonProduct)
 
 }
 
-func Commit(p []byte) {
-
-	//COMMIT
-	dgraphClient := database.NewClient()
-
-	mu := &api.Mutation{
-		CommitNow: true,
-	}
-
-	mu.SetJson = p
-	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(assigned)
-}
 
 /*
 QUERY

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/kevinmalo/Costanera700/internal/logs"
+	"github.com/kevinmalo/Costanera700/migrations/upload_transactions"
 )
 
 
@@ -16,7 +17,7 @@ func main()  {
 	//upload_products.SetBuyers()
 
 	// Set all transactions.
-	//upload_transactions.SetTransactions()
+	upload_transactions.SetTransactions()
 
 	//Run server
 	mux := Routes()

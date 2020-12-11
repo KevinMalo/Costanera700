@@ -1,11 +1,8 @@
 package upload_transactions
 
 import (
-	"context"
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
-	"github.com/dgraph-io/dgo/v2/protos/api"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"io"
 	"log"
@@ -20,8 +17,6 @@ type Transaction struct {
 	Device     string   `json:"device"`
 	ProductIds []string `json:"product_ids"`
 }
-
-var ctx = context.Background()
 
 func SetTransactions() {
 
@@ -87,30 +82,9 @@ func SetTransactions() {
 		log.Fatal("error al convertir a JSON: " + err.Error())
 	}
 
-	fmt.Printf("%s", jsonTransactions)
-
 	//Commit database
-	Commit(jsonTransactions)
+	database.Commit(jsonTransactions)
 
-}
-
-
-func Commit(p []byte) {
-
-	//COMMIT
-	dgraphClient := database.NewClient()
-
-	mu := &api.Mutation{
-		CommitNow: true,
-	}
-
-	mu.SetJson = p
-	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(assigned)
 }
 
 /*

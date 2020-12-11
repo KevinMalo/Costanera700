@@ -1,12 +1,16 @@
 package database
 
 import (
+	"context"
+	"fmt"
 	"github.com/dgraph-io/dgo/v2"
 	"github.com/dgraph-io/dgo/v2/protos/api"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 )
+
+var ctx = context.Background()
 
 var (
 	host = "192.168.100.100"
@@ -26,4 +30,20 @@ func NewClient() *dgo.Dgraph {
 	)
 }
 
+func Commit(p []byte) {
 
+	//COMMIT
+	dgraphClient := NewClient()
+
+	mu := &api.Mutation{
+		CommitNow: true,
+	}
+
+	mu.SetJson = p
+	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(assigned)
+}

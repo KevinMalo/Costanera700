@@ -1,17 +1,12 @@
 package upload_buyers
 
 import (
-	"context"
-	"fmt"
-	"github.com/dgraph-io/dgo/v2/protos/api"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
 )
-
-var ctx = context.Background()
 
 //Buyer Defino los tipos de Datos de mi aplicación.
 type Buyer struct {
@@ -51,19 +46,8 @@ func SetBuyers()  {
 	jsonBuyer := body
 
 	//COMMIT
-	dgraphClient := database.NewClient()
+	database.Commit(jsonBuyer)
 
-	mu := &api.Mutation{
-		CommitNow: true,
-	}
-
-	mu.SetJson = jsonBuyer
-	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(assigned)
 }
 
 /*
