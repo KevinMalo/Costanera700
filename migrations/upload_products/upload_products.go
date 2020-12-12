@@ -4,17 +4,12 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"github.com/kevinmalo/Costanera700/internal/database"
+	"github.com/kevinmalo/Costanera700/internal/models"
 	"io"
 	"log"
 	"os"
 	"strconv"
 )
-
-type Product struct {
-	Id    string `json:"id"`
-	Name  string `json:"name"`
-	Price int    `json:"price"`
-}
 
 func SetBuyers() {
 
@@ -31,7 +26,7 @@ func SetBuyers() {
 	r.FieldsPerRecord = 3
 
 	//Iteration CSV
-	var products []Product
+	var products []models.Product
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
@@ -41,7 +36,7 @@ func SetBuyers() {
 			log.Printf("error leyendo la linea: %v", err)
 		}
 
-		c := Product{
+		c := models.Product{
 			Id:   record[0],
 			Name: record[1],
 		}

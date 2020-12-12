@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/kevinmalo/Costanera700/gadgets/buyers/models"
+	"github.com/kevinmalo/Costanera700/internal/models"
 	"net/http"
 )
 
@@ -42,6 +42,7 @@ func buyerHandler(w http.ResponseWriter, r *http.Request)  {
 	buyers := models.GetBuyers()
 
 	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Access-Control-Allow-Origin","*")
 	w.Write(buyers)
 
 }

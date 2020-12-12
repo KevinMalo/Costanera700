@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-//Buyer Defino los tipos de Datos de mi aplicación.
-type Buyer struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Age  uint8  `json:"age"`
-}
-
 func SetBuyers()  {
 	url := "https://kqxty15mpg.execute-api.us-east-1.amazonaws.com/buyers"
 

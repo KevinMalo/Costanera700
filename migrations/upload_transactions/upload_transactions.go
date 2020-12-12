@@ -4,19 +4,12 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"github.com/kevinmalo/Costanera700/internal/database"
+	"github.com/kevinmalo/Costanera700/internal/models"
 	"io"
 	"log"
 	"os"
 	"regexp"
 )
-
-type Transaction struct {
-	Id         string   `json:"id"`
-	BuyerId    string   `json:"buyer_id"`
-	Ip         string   `json:"ip"`
-	Device     string   `json:"device"`
-	ProductIds []string `json:"product_ids"`
-}
 
 func SetTransactions() {
 
@@ -33,7 +26,7 @@ func SetTransactions() {
 	r.FieldsPerRecord = 5
 
 	//Iteration CSV
-	var transaction []Transaction
+	var transaction []models.Transaction
 
 	for {
 		//Reading line by line
@@ -45,7 +38,7 @@ func SetTransactions() {
 			log.Printf("error leyendo la linea: %v", err)
 		}
 
-		t := Transaction{
+		t := models.Transaction{
 			Id:         record[0],
 			BuyerId:    record[1],
 			Ip:         record[2],
