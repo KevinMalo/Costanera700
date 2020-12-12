@@ -1,29 +1,17 @@
 package upload_transactions
 
 import (
-	"context"
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
-	"github.com/dgraph-io/dgo/v2/protos/api"
 	"github.com/kevinmalo/Costanera700/internal/database"
+	"github.com/kevinmalo/Costanera700/internal/models"
 	"io"
 	"log"
 	"os"
 	"regexp"
 )
 
-type Transaction struct {
-	Id         string   `json:"id"`
-	BuyerId    string   `json:"buyer_id"`
-	Ip         string   `json:"ip"`
-	Device     string   `json:"device"`
-	ProductIds []string `json:"product_ids"`
-}
-
-var ctx = context.Background()
-
-func SetTransactions() {
+func SetTransactions(date int) {
 
 	//Open CSV
 	f, err := os.Open("./datafiles/transactions/transactions.txt")
@@ -38,7 +26,7 @@ func SetTransactions() {
 	r.FieldsPerRecord = 5
 
 	//Iteration CSV
-	var transaction []Transaction
+	var transaction []models.Transaction
 
 	for {
 		//Reading line by line
@@ -50,11 +38,12 @@ func SetTransactions() {
 			log.Printf("error leyendo la linea: %v", err)
 		}
 
-		t := Transaction{
+		t := models.Transaction{
 			Id:         record[0],
 			BuyerId:    record[1],
 			Ip:         record[2],
 			Device:     record[3],
+			Date:     	date,
 		}
 
 		if record[4] == "" {
@@ -87,41 +76,7 @@ func SetTransactions() {
 		log.Fatal("error al convertir a JSON: " + err.Error())
 	}
 
-	fmt.Printf("%s", jsonTransactions)
-
 	//Commit database
-	Commit(jsonTransactions)
+	database.Commit(jsonTransactions)
 
 }
-
-
-func Commit(p []byte) {
-
-	//COMMIT
-	dgraphClient := database.NewClient()
-
-	mu := &api.Mutation{
-		CommitNow: true,
-	}
-
-	mu.SetJson = p
-	assigned, err := dgraphClient.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(assigned)
-}
-
-/*
-QUERY
-{
-  buyers(func: has(device)) {
-    uid
-    id
-    ip
-    device
-	product_ids
-  }
-}
-*/
