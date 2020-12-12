@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func SetBuyers() {
+func SetBuyers(date int) {
 
 	//Open CSV
 	f, err := os.Open("./datafiles/products/products.txt")
@@ -39,6 +39,7 @@ func SetBuyers() {
 		c := models.Product{
 			Id:   record[0],
 			Name: record[1],
+			Date: date,
 		}
 
 		if record[2] == "" {
@@ -68,16 +69,3 @@ func SetBuyers() {
 	database.Commit(jsonProduct)
 
 }
-
-
-/*
-QUERY
-{
-  buyers(func: has(price)) {
-    uid
-    id
-    name
-    price
-  }
-}
-*/

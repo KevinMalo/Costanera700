@@ -18,6 +18,7 @@ const (
 		id
 		name
 		age
+		date
 	  }
 	}
 	`

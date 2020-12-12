@@ -11,7 +11,7 @@ import (
 	"regexp"
 )
 
-func SetTransactions() {
+func SetTransactions(date int) {
 
 	//Open CSV
 	f, err := os.Open("./datafiles/transactions/transactions.txt")
@@ -43,6 +43,7 @@ func SetTransactions() {
 			BuyerId:    record[1],
 			Ip:         record[2],
 			Device:     record[3],
+			Date:     	date,
 		}
 
 		if record[4] == "" {
@@ -79,16 +80,3 @@ func SetTransactions() {
 	database.Commit(jsonTransactions)
 
 }
-
-/*
-QUERY
-{
-  buyers(func: has(device)) {
-    uid
-    id
-    ip
-    device
-	product_ids
-  }
-}
-*/

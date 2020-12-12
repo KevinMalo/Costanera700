@@ -1,14 +1,16 @@
 package upload_buyers
 
 import (
+	"encoding/json"
 	"github.com/kevinmalo/Costanera700/internal/database"
+	"github.com/kevinmalo/Costanera700/internal/models"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
 )
 
-func SetBuyers()  {
+func SetBuyers(date int) {
 	url := "https://kqxty15mpg.execute-api.us-east-1.amazonaws.com/buyers"
 
 	spaceClient := http.Client{
@@ -36,21 +38,38 @@ func SetBuyers()  {
 		log.Fatal(readErr)
 	}
 
-	jsonBuyer := body
+	var buyers = []models.Buyer{}
+
+	err = json.Unmarshal(body, &buyers)
+	if err != nil {
+		log.Fatal("Error al convertir a JSON: " + err.Error())
+	}
+
+	//fmt.Println(buyers[0])
+
+	// Encode JSON
+
+	var buyerJson = []models.Buyer{}
+
+	for i := range buyers {
+		b := models.Buyer{
+					Id:   buyers[i].Id,
+					Name: buyers[i].Name,
+					Age:  buyers[i].Age,
+					Date: date,
+				}
+		buyerJson = append(buyerJson,b)
+	}
+
+	data, err := json.MarshalIndent(buyerJson, "", "  ")
+
+	if err != nil {
+		log.Fatal("Error al convertir a JSON: " + err.Error())
+	}
+
+	//fmt.Printf("%s", data)
 
 	//COMMIT
-	database.Commit(jsonBuyer)
+	database.Commit(data)
 
 }
-
-/*
-QUERY
-{
-  buyers(func: has(name)) {
-    uid
-    id
-    name
-    age
-  }
-}
-*/
