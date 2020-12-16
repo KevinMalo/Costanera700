@@ -22,7 +22,9 @@ func Routes() *chi.Mux {
 
 	//Routes
 	mux.Post("/uploads/{id}", uploadsHandler)
+	mux.Get("/transaction/{id}", shoppingHistoryHandler)
 	mux.Get("/buyers", buyerHandler)
+	mux.Get("/buyers/{id}", buyerIdHandler)
 
 	return mux
 
@@ -35,6 +37,35 @@ func buyerHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(buyers)
+
+}
+
+func shoppingHistoryHandler(w http.ResponseWriter, r *http.Request) {
+
+	buyerId := chi.URLParam(r, "id")
+
+	//Search products id data
+	productsIds := models.GetTransactionsHistory(buyerId)
+
+	//Search products names
+	productsNames := models.GetProductsNames(productsIds)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(productsNames)
+
+}
+
+func buyerIdHandler(w http.ResponseWriter, r *http.Request) {
+
+	buyerId := chi.URLParam(r, "id")
+
+	// Search buyer data
+	buyer := models.GetBuyersById(buyerId)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(buyer)
 
 }
 

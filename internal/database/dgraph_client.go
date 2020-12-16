@@ -13,7 +13,7 @@ import (
 var ctx = context.Background()
 
 var (
-	host = "192.168.100.104"
+	host = "192.168.1.39"
 	port ="9080"
 )
 

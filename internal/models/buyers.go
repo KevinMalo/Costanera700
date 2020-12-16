@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"log"
 )
@@ -11,7 +12,7 @@ const (
 	maxLengthInId = 8
 	maxLengthInName = 100
 	maxLengthInAge = 255
-	buyerQuery = `
+	buyersQuery = `
 	{
 	  buyers(func: has(name)) {
 		uid
@@ -53,7 +54,34 @@ func GetBuyers() []byte {
 	dgraphClient := database.NewClient()
 	txn := dgraphClient.NewTxn()
 
-	resp, err := txn.Query(context.Background(), buyerQuery)
+	resp, err := txn.Query(context.Background(), buyersQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return resp.Json
+
+}
+
+func GetBuyersById(buyerId string) []byte {
+
+	buyerByIdQuery := `
+	{
+	  buyers(func: eq(id,%s)) {
+		uid
+		id
+		name
+		age
+		date
+	  }
+	}
+	`
+	queryFormat := fmt.Sprintf(buyerByIdQuery, buyerId)
+
+	dgraphClient := database.NewClient()
+	txn := dgraphClient.NewTxn()
+
+	resp, err := txn.Query(context.Background(), queryFormat)
 	if err != nil {
 		log.Fatal(err)
 	}
