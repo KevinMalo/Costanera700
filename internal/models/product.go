@@ -24,7 +24,17 @@ type Product struct {
 	Id    string `json:"product_id"`
 	Name  string `json:"name"`
 	Price int    `json:"price"`
-	Date int    `json:"date"`
+	Date  int    `json:"date"`
+}
+
+type ProductResp struct {
+	Product []struct {
+		UID       string `json:"uid"`
+		ProductID string `json:"product_id"`
+		Name      string `json:"name"`
+		Price     int    `json:"price"`
+		Date      int    `json:"date"`
+	} `json:"product"`
 }
 
 type MyJsonName struct {
@@ -32,7 +42,6 @@ type MyJsonName struct {
 		ProductsIds []string `json:"products_ids"`
 	} `json:"transaction"`
 }
-
 
 func GetProducts() []byte {
 
@@ -70,12 +79,14 @@ func GetProductById(productId string) []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	//fmt.Printf("%s", resp.Json)
 	return resp.Json
 
 }
 
-func GetProductsNames( productsIds []byte ) []byte {
+func GetProductsNames(productsIds []byte) []byte {
+	//s := string(productsIds)
+	//fmt.Printf(s)
 
 	var productsNames MyJsonName
 	err := json.Unmarshal(productsIds, &productsNames)
@@ -83,21 +94,16 @@ func GetProductsNames( productsIds []byte ) []byte {
 		log.Fatal("Error al decodificar JSON: " + err.Error())
 	}
 
-	//s := string(productsNames)
-	//fmt.Printf(s)
-
-	var productJson = []Product{}
+	var productJson = []ProductResp{}
 
 	for _, t := range productsNames.Transaction {
 		for _, id := range t.ProductsIds {
 
-			var p Product
+			var p ProductResp
 			err := json.Unmarshal(GetProductById(id), &p)
 			if err != nil {
 				log.Fatal("Error al decodificar JSON: " + err.Error())
 			}
-
-			//fmt.Printf("%s", p)
 
 			productJson = append(productJson,p)
 		}

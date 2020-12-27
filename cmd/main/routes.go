@@ -45,7 +45,7 @@ func shoppingHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	buyerId := chi.URLParam(r, "id")
 
 	//Search products id data
-	productsIds := models.GetTransactionsHistory(buyerId)
+	productsIds := models.GetTransactionsHistory(buyerId) //OK
 
 	//Search products names
 	productsNames := models.GetProductsNames(productsIds)
