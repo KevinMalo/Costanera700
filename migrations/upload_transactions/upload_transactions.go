@@ -3,6 +3,7 @@ package upload_transactions
 import (
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"github.com/kevinmalo/Costanera700/internal/models"
 	"io"
@@ -27,6 +28,8 @@ func SetTransactions(date int) {
 
 	//Iteration CSV
 	var transaction []models.Transaction
+
+	var allIdsTransactions []string
 
 	for {
 		//Reading line by line
@@ -64,13 +67,23 @@ func SetTransactions(date int) {
 			matches := re.FindAllString(record[4],-1)
 			t.ProductIds = matches
 
+			for _, r := range matches{
+				allIdsTransactions = append(allIdsTransactions, r)
+			}
+
+
 		}
 
 		transaction = append(transaction, t)
 
 	}
 
-	// Create JSON
+	//fmt.Println(allIdsTransactions)
+	fmt.Println("******")
+	printUniqueValue(allIdsTransactions)
+	fmt.Println("******")
+
+	//Create JSON
 	jsonTransactions, err := json.MarshalIndent(transaction, "", "  ")
 	if err != nil {
 		log.Fatal("error al convertir a JSON: " + err.Error())
@@ -79,4 +92,14 @@ func SetTransactions(date int) {
 	//Commit database
 	database.Commit(jsonTransactions)
 
+}
+
+func printUniqueValue( arr []string){
+	//Create a   dictionary of values for each element
+	dict:= make(map[string]int)
+	for _ , id :=  range arr {
+		dict[id] = dict[id]+1
+	}
+
+	fmt.Println(dict)
 }

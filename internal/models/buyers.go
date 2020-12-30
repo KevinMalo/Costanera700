@@ -2,17 +2,14 @@ package models
 
 import (
 	"context"
-	"errors"
+	"encoding/json"
 	"fmt"
 	"github.com/kevinmalo/Costanera700/internal/database"
 	"log"
 )
 
 const (
-	maxLengthInId = 8
-	maxLengthInName = 100
-	maxLengthInAge = 255
-	buyersQuery = `
+	buyersQuery     = `
 	{
 	  buyers(func: has(name)) {
 		uid
@@ -25,28 +22,36 @@ const (
 	`
 )
 
+type TransactionName struct {
+	Transaction []struct {
+		IP      string `json:"ip"`
+		BuyerID string `json:"buyer_id"`
+	} `json:"transaction"`
+}
+
+type BuyerIdResp struct {
+	Buyers []struct {
+		UID  string `json:"uid"`
+		ID   string `json:"id"`
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+		Date int    `json:"date"`
+	} `json:"buyers"`
+}
+
+type BuyersIds struct {
+	Transaction []struct {
+		IP      string `json:"ip"`
+		BuyerID string `json:"buyer_id"`
+	} `json:"transaction"`
+}
+
 //Buyer model structure for buyers
 type Buyer struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 	Age  uint8  `json:"age"`
-	Date int `json:"date"`
-}
-
-func (cmd *Buyer) validate() error {
-	if len(cmd.Id) > maxLengthInId {
-		return errors.New("id must be between 1-8 chars")
-	}
-
-	if len(cmd.Name) > maxLengthInName {
-		return errors.New("name must be less than 100 chars")
-	}
-
-	if cmd.Age > maxLengthInAge {
-		return errors.New("name must be less than 255 chars")
-	}
-
-	return nil
+	Date int    `json:"date"`
 }
 
 func GetBuyers() []byte {
@@ -88,4 +93,35 @@ func GetBuyersById(buyerId string) []byte {
 
 	return resp.Json
 
+}
+
+func GetBuyerName(buyersids []byte) []byte {
+
+	var buyerNames BuyersIds
+	err := json.Unmarshal(buyersids, &buyerNames)
+	if err != nil {
+		log.Fatal("Error al decodificar JSON: " + err.Error())
+	}
+
+	var productJson = []BuyerIdResp{}
+
+	for _, b := range buyerNames.Transaction {
+
+		var p BuyerIdResp
+		err := json.Unmarshal(GetBuyersById(b.BuyerID), &p)
+		if err != nil {
+			log.Fatal("Error al decodificar JSON: " + err.Error())
+		}
+
+		productJson = append(productJson,p)
+	}
+
+	data, err := json.Marshal(productJson)
+	if err != nil {
+		log.Fatal("Error al convertir a JSON: " + err.Error())
+	}
+
+	fmt.Printf("%s", data)
+
+	return data
 }

@@ -79,7 +79,7 @@ func GetProductById(productId string) []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//fmt.Printf("%s", resp.Json)
+	fmt.Printf("%s", resp.Json)
 	return resp.Json
 
 }
@@ -105,7 +105,7 @@ func GetProductsNames(productsIds []byte) []byte {
 				log.Fatal("Error al decodificar JSON: " + err.Error())
 			}
 
-			productJson = append(productJson,p)
+			productJson = append(productJson, p)
 		}
 	}
 
@@ -114,7 +114,37 @@ func GetProductsNames(productsIds []byte) []byte {
 		log.Fatal("Error al convertir a JSON: " + err.Error())
 	}
 
-	fmt.Printf("%s", data)
+	//fmt.Printf("%s", data)
+
+	return data
+
+}
+
+func GetBestSellers() []byte {
+	//s := string(productsIds)
+	//fmt.Printf(s)
+
+	productsIds := [5]string{"3d659163", "7eeb79ef", "7fbe369", "979ed1c3", "d6e2c22d"}
+
+	var productJson = []ProductResp{}
+
+	for _, id := range productsIds {
+
+		var p ProductResp
+		err := json.Unmarshal(GetProductById(id), &p)
+		if err != nil {
+			log.Fatal("Error al decodificar JSON: " + err.Error())
+		}
+
+		productJson = append(productJson, p)
+	}
+
+	data, err := json.Marshal(productJson)
+	if err != nil {
+		log.Fatal("Error al convertir a JSON: " + err.Error())
+	}
+
+	//fmt.Printf("%s", data)
 
 	return data
 
