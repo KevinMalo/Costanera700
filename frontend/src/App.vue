@@ -2,6 +2,7 @@
   <v-app>
     <v-main>
     <v-container fluid>
+      <navbar></navbar>
       <router-view></router-view>
     </v-container>
     </v-main>

@@ -21,7 +21,7 @@
 
 <script>
 
-import api from "@/services/api"
+import getBuyersService from "@/services/getBuyersService"
 
 export default {
   name: "Buyers",
@@ -43,7 +43,7 @@ export default {
       }
     },
     created() {
-      api.getBuyers()
+      getBuyersService.getBuyers()
       .then( buyers => this.buyers = buyers )
     }
 };

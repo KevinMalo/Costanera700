@@ -21,8 +21,16 @@ func Routes() *chi.Mux {
 	)
 
 	//Routes
-	mux.Post("/uploads/{id}", uploadsHandler)
+	//Add all data in db
+	mux.Post("/uploads/{date}", uploadsHandler)
+	//Return product history by id
+	mux.Get("/transaction/{id}", shoppingHistoryHandler)
+	//Get all buyers
 	mux.Get("/buyers", buyerHandler)
+	//Get buyers with same ip
+	mux.Get("/buyers-ip/{id}", buyerIpHandler)
+	//Get best sellers
+	mux.Get("/best-sellers", bestSellerHandler)
 
 	return mux
 
@@ -38,9 +46,41 @@ func buyerHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func shoppingHistoryHandler(w http.ResponseWriter, r *http.Request) {
+
+	buyerId := chi.URLParam(r, "id")
+
+	//Search products id data
+	productsIds := models.GetTransactionsHistory(buyerId)
+
+	//Search products names
+	productsNames := models.GetProductsNames(productsIds)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(productsNames)
+
+}
+
+func buyerIpHandler(w http.ResponseWriter, r *http.Request) {
+
+	buyerId := chi.URLParam(r, "id")
+
+	// Search buyers ips
+	buyersIds := models.GetTransactionsIp(buyerId)
+
+	//Search buyers names
+	buyersNames := models.GetBuyerName(buyersIds)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(buyersNames)
+
+}
+
 func uploadsHandler(w http.ResponseWriter, r *http.Request) {
 
-	date := chi.URLParam(r, "id")
+	date := chi.URLParam(r, "date")
 	i, _ := strconv.Atoi(date)
 
 	//// Set all
@@ -48,4 +88,14 @@ func uploadsHandler(w http.ResponseWriter, r *http.Request) {
 	upload_products.SetBuyers(i)
 	upload_transactions.SetTransactions(i)
 
+}
+
+func bestSellerHandler(w http.ResponseWriter, r *http.Request) {
+
+	bestSellers := models.GetBestSellers()
+
+	//// Set all
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(bestSellers)
 }
