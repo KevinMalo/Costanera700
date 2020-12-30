@@ -8,7 +8,11 @@ import (
 	"github.com/kevinmalo/Costanera700/migrations/upload_products"
 	"github.com/kevinmalo/Costanera700/migrations/upload_transactions"
 	"net/http"
-	"strconv"
+	"time"
+)
+
+const (
+	layoutISO = "2006-01-02"
 )
 
 func Routes() *chi.Mux {
@@ -81,12 +85,14 @@ func buyerIpHandler(w http.ResponseWriter, r *http.Request) {
 func uploadsHandler(w http.ResponseWriter, r *http.Request) {
 
 	date := chi.URLParam(r, "date")
-	i, _ := strconv.Atoi(date)
+	t, _ := time.Parse(layoutISO, date)
+	timeUnix := int(t.Unix())
+
 
 	//// Set all
-	upload_buyers.SetBuyers(i)
-	upload_products.SetBuyers(i)
-	upload_transactions.SetTransactions(i)
+	upload_buyers.SetBuyers(timeUnix)
+	upload_products.SetBuyers(timeUnix)
+	upload_transactions.SetTransactions(timeUnix)
 
 }
 
