@@ -12,11 +12,13 @@ import (
 
 var ctx = context.Background()
 
+//Set the DB settings where is running
 var (
 	host = "192.168.1.49"
 	port ="9080"
 )
 
+//Create new dgraph client
 func NewClient() *dgo.Dgraph {
 	// Dial a gRPC connection. The address to dial to can be configured when
 	// setting up the dgraph cluster.
@@ -30,6 +32,7 @@ func NewClient() *dgo.Dgraph {
 	)
 }
 
+//Execute new action
 func Commit(p []byte) {
 
 	//COMMIT

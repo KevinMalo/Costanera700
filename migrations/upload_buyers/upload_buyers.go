@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// Push buyers data into db
 func SetBuyers(date int) {
 	url := "https://kqxty15mpg.execute-api.us-east-1.amazonaws.com/buyers"
 
@@ -42,10 +43,8 @@ func SetBuyers(date int) {
 
 	err = json.Unmarshal(body, &buyers)
 	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
+		log.Fatal("Error decoding json: " + err.Error())
 	}
-
-	//fmt.Println(buyers[0])
 
 	// Encode JSON
 
@@ -64,10 +63,8 @@ func SetBuyers(date int) {
 	data, err := json.MarshalIndent(buyerJson, "", "  ")
 
 	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
-
-	//fmt.Printf("%s", data)
 
 	//COMMIT
 	database.Commit(data)

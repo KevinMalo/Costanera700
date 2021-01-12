@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	buyersQuery     = `
+	//Query for get all buyers
+	buyersQuery = `
 	{
 	  buyers(func: has(name)) {
 		uid
@@ -22,13 +23,7 @@ const (
 	`
 )
 
-type TransactionName struct {
-	Transaction []struct {
-		IP      string `json:"ip"`
-		BuyerID string `json:"buyer_id"`
-	} `json:"transaction"`
-}
-
+//Buyer model structure for map the request from db
 type BuyerIdResp struct {
 	Buyers []struct {
 		UID  string `json:"uid"`
@@ -39,6 +34,7 @@ type BuyerIdResp struct {
 	} `json:"buyers"`
 }
 
+//Buyer model structure for get buyer id
 type BuyersIds struct {
 	Transaction []struct {
 		IP      string `json:"ip"`
@@ -54,6 +50,7 @@ type Buyer struct {
 	Date int    `json:"date"`
 }
 
+//Get all buyers from db
 func GetBuyers() []byte {
 
 	dgraphClient := database.NewClient()
@@ -68,6 +65,7 @@ func GetBuyers() []byte {
 
 }
 
+//Get buyer by id from db
 func GetBuyersById(buyerId string) []byte {
 
 	buyerByIdQuery := `
@@ -95,33 +93,32 @@ func GetBuyersById(buyerId string) []byte {
 
 }
 
-func GetBuyerName(buyersids []byte) []byte {
+//Get buyer name by id
+func GetBuyerName(buyersIds []byte) []byte {
 
 	var buyerNames BuyersIds
-	err := json.Unmarshal(buyersids, &buyerNames)
+	err := json.Unmarshal(buyersIds, &buyerNames)
 	if err != nil {
-		log.Fatal("Error al decodificar JSON: " + err.Error())
+		log.Fatal("Error decoding json: " + err.Error())
 	}
 
-	var productJson = []BuyerIdResp{}
+	var buyersNameJson = []BuyerIdResp{}
 
 	for _, b := range buyerNames.Transaction {
 
 		var p BuyerIdResp
 		err := json.Unmarshal(GetBuyersById(b.BuyerID), &p)
 		if err != nil {
-			log.Fatal("Error al decodificar JSON: " + err.Error())
+			log.Fatal("Error decoding json: " + err.Error())
 		}
 
-		productJson = append(productJson,p)
+		buyersNameJson = append(buyersNameJson,p)
 	}
 
-	data, err := json.Marshal(productJson)
+	data, err := json.Marshal(buyersNameJson)
 	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
-
-	fmt.Printf("%s", data)
 
 	return data
 }

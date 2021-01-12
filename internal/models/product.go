@@ -8,6 +8,7 @@ import (
 	"log"
 )
 
+//Query for get all products
 const productQuery = `
 	{
 	  products(func: has(price)) {
@@ -20,6 +21,7 @@ const productQuery = `
 	}
 	`
 
+//Product model structure for buyers
 type Product struct {
 	Id    string `json:"product_id"`
 	Name  string `json:"name"`
@@ -27,6 +29,7 @@ type Product struct {
 	Date  int    `json:"date"`
 }
 
+//ProductResp model structure for map the request from db
 type ProductResp struct {
 	Product []struct {
 		UID       string `json:"uid"`
@@ -37,12 +40,14 @@ type ProductResp struct {
 	} `json:"product"`
 }
 
-type MyJsonName struct {
+//ProductIdResp model structure for map the request from db
+type ProductIdResp struct {
 	Transaction []struct {
 		ProductsIds []string `json:"products_ids"`
 	} `json:"transaction"`
 }
 
+//Get all products from db
 func GetProducts() []byte {
 
 	dgraphClient := database.NewClient()
@@ -57,6 +62,7 @@ func GetProducts() []byte {
 
 }
 
+//Get product from db by id
 func GetProductById(productId string) []byte {
 
 	productByIdQuery := `
@@ -84,14 +90,13 @@ func GetProductById(productId string) []byte {
 
 }
 
+//Get product names from db
 func GetProductsNames(productsIds []byte) []byte {
-	//s := string(productsIds)
-	//fmt.Printf(s)
 
-	var productsNames MyJsonName
+	var productsNames ProductIdResp
 	err := json.Unmarshal(productsIds, &productsNames)
 	if err != nil {
-		log.Fatal("Error al decodificar JSON: " + err.Error())
+		log.Fatal("Error decoding json: " + err.Error())
 	}
 
 	var productJson = []ProductResp{}
@@ -102,7 +107,7 @@ func GetProductsNames(productsIds []byte) []byte {
 			var p ProductResp
 			err := json.Unmarshal(GetProductById(id), &p)
 			if err != nil {
-				log.Fatal("Error al decodificar JSON: " + err.Error())
+				log.Fatal("Error decoding json: " + err.Error())
 			}
 
 			productJson = append(productJson, p)
@@ -111,18 +116,15 @@ func GetProductsNames(productsIds []byte) []byte {
 
 	data, err := json.Marshal(productJson)
 	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
-
-	//fmt.Printf("%s", data)
 
 	return data
 
 }
 
+//Get most selled products
 func GetBestSellers() []byte {
-	//s := string(productsIds)
-	//fmt.Printf(s)
 
 	productsIds := [5]string{"3d659163", "7eeb79ef", "7fbe369", "979ed1c3", "d6e2c22d"}
 
@@ -133,7 +135,7 @@ func GetBestSellers() []byte {
 		var p ProductResp
 		err := json.Unmarshal(GetProductById(id), &p)
 		if err != nil {
-			log.Fatal("Error al decodificar JSON: " + err.Error())
+			log.Fatal("Error decoding json: " + err.Error())
 		}
 
 		productJson = append(productJson, p)
@@ -141,10 +143,8 @@ func GetBestSellers() []byte {
 
 	data, err := json.Marshal(productJson)
 	if err != nil {
-		log.Fatal("Error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
-
-	//fmt.Printf("%s", data)
 
 	return data
 

@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	//Query for get all transactions
 	transactionQuery = `
 	{
 	  transaction(func: has(device)) {
@@ -23,6 +24,7 @@ const (
 	`
 )
 
+//Transaction model structure for transactions
 type Transaction struct {
 	Id         string   `json:"id"`
 	BuyerId    string   `json:"buyer_id"`
@@ -32,6 +34,7 @@ type Transaction struct {
 	ProductIds []string `json:"products_ids"`
 }
 
+//Transaction model structure for map the request from db
 type TransactionResp struct {
 	Transaction []struct {
 		IP      string `json:"ip"`
@@ -39,6 +42,7 @@ type TransactionResp struct {
 	} `json:"transaction"`
 }
 
+//Get all transactions from db
 func GetTransactions() []byte {
 
 	dgraphClient := database.NewClient()
@@ -53,6 +57,7 @@ func GetTransactions() []byte {
 
 }
 
+//Get all transaction history from db for buyer
 func GetTransactionsHistory(buyerId string) []byte {
 
 	transactionHistoryQuery := `
@@ -77,6 +82,7 @@ func GetTransactionsHistory(buyerId string) []byte {
 
 }
 
+//Get ip buyer from transaction by id
 func GetTransactionsIp(buyerId string) []byte {
 
 	transactionHistoryQuery := `
@@ -101,7 +107,7 @@ func GetTransactionsIp(buyerId string) []byte {
 	var buyerIP TransactionResp
 	err = json.Unmarshal(resp.Json, &buyerIP)
 	if err != nil {
-		log.Fatal("Error al decodificar JSON: " + err.Error())
+		log.Fatal("Error decoding json: " + err.Error())
 	}
 
 	buyersIps := GetBuyersSameIp(buyerIP.Transaction[0].IP)
@@ -110,6 +116,7 @@ func GetTransactionsIp(buyerId string) []byte {
 
 }
 
+//Get buyers with same ip from db
 func GetBuyersSameIp(buyerIp string) []byte {
 
 	transactionHistoryQuery := `

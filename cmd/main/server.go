@@ -11,6 +11,7 @@ type MyServer struct {
 	server *http.Server
 }
 
+//Server config
 func NewServer(mux *chi.Mux) *MyServer {
 	s := &http.Server{
 		Addr:           ":9000",
