@@ -11,12 +11,13 @@ import (
 	"strconv"
 )
 
-func SetBuyers(date int) {
+// Push products data into db
+func SetProducts(date int) {
 
 	//Open CSV
 	f, err := os.Open("./datafiles/products/products.txt")
 	if err != nil {
-		log.Printf("error abriendo el archivo: %v", err)
+		log.Printf("Error while file is opening: %v", err)
 	}
 	defer f.Close()
 
@@ -33,7 +34,7 @@ func SetBuyers(date int) {
 			break
 		}
 		if err != nil {
-			log.Printf("error leyendo la linea: %v", err)
+			log.Printf("Error reading the line: %v", err)
 		}
 
 		c := models.Product{
@@ -43,13 +44,13 @@ func SetBuyers(date int) {
 		}
 
 		if record[2] == "" {
-			log.Printf("precio del producto vacio: %v", err)
+			log.Printf("Price of product is empty: %v", err)
 			continue
 		}
 
 		i, err := strconv.Atoi(record[2])
 		if err != nil {
-			log.Printf("error leyendo la linea: %v", err)
+			log.Printf("Error reading the line: %v", err)
 			continue
 		}
 
@@ -62,7 +63,7 @@ func SetBuyers(date int) {
 	//Create JSON
 	jsonProduct, err := json.MarshalIndent(products, "", "  ")
 	if err != nil {
-		log.Fatal("error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
 
 	//Commit database

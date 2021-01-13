@@ -5,19 +5,21 @@
         <v-row no-gutters>
           <v-col>
             <v-card class="pa-2" outlined tile>
-              <v-text-field label="userId" v-model="userId"></v-text-field>
+              <v-text-field label="USER ID" v-model="userId"></v-text-field>
             </v-card>
-            <v-btn
-              color="primary"
-              type="submit"
-              v-on:click="
-                getProducts(userId);
-                getBuyersIP(userId);
-                getBestSellers();
-              "
-            >
-              Submit
-            </v-btn>
+            <div class="top">
+              <v-btn
+                color="primary"
+                type="submit"
+                v-on:click="
+                  getProducts(userId);
+                  getBuyersIP(userId);
+                  getBestSellers();
+                "
+              >
+                Submit
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -35,10 +37,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(item, i) in dataProducts"
-                :key="i"
-              >
+              <tr v-for="(item, i) in dataProducts" :key="i">
                 <td>{{ item.product[0].product_id }}</td>
                 <td>{{ item.product[0].name }}</td>
               </tr>
@@ -133,3 +132,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.top {
+  margin-top: 8px;
+}
+</style>

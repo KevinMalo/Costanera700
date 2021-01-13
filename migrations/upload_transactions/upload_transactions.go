@@ -12,6 +12,7 @@ import (
 	"regexp"
 )
 
+// Push transactions data into db
 func SetTransactions(date int) {
 
 	//Open CSV
@@ -38,7 +39,7 @@ func SetTransactions(date int) {
 			break
 		}
 		if err != nil {
-			log.Printf("error leyendo la linea: %v", err)
+			log.Printf("Error reading the line: %v", err)
 		}
 
 		t := models.Transaction{
@@ -50,7 +51,7 @@ func SetTransactions(date int) {
 		}
 
 		if record[4] == "" {
-			log.Printf("ids de productos vacios: %v", err)
+			log.Printf("Products ids is empty: %v", err)
 			continue
 		}
 
@@ -60,7 +61,7 @@ func SetTransactions(date int) {
 			//Compile regex
 			re, err := regexp.Compile(`\w{7,8}`)
 			if err != nil {
-				log.Printf("ids de productos vacios: %v", err)
+				log.Printf("Products ids is empty: %v", err)
 			}
 
 			//Extract ids matches
@@ -78,6 +79,7 @@ func SetTransactions(date int) {
 
 	}
 
+	// Get the best sellers
 	//fmt.Println(allIdsTransactions)
 	fmt.Println("******")
 	printUniqueValue(allIdsTransactions)
@@ -86,7 +88,7 @@ func SetTransactions(date int) {
 	//Create JSON
 	jsonTransactions, err := json.MarshalIndent(transaction, "", "  ")
 	if err != nil {
-		log.Fatal("error al convertir a JSON: " + err.Error())
+		log.Fatal("Error when encoding json: " + err.Error())
 	}
 
 	//Commit database
@@ -94,8 +96,9 @@ func SetTransactions(date int) {
 
 }
 
+// Count the best sellers
 func printUniqueValue( arr []string){
-	//Create a   dictionary of values for each element
+	//Create a dictionary of values for each element
 	dict:= make(map[string]int)
 	for _ , id :=  range arr {
 		dict[id] = dict[id]+1
