@@ -2,7 +2,7 @@
   <v-toolbar class="hidden-xs-and-down">
     <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">
-          Costanera700
+          <h1 class="display-1 mb-0">Costanera700</h1> 
         </router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
