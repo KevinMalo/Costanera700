@@ -102,6 +102,10 @@ func uploadsHandler(w http.ResponseWriter, r *http.Request) {
 	upload_products.SetProducts(timeUnix)
 	upload_transactions.SetTransactions(timeUnix)
 
+	// Set headers
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 }
 
 //Get the 5 best-selling products

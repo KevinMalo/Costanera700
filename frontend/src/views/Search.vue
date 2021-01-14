@@ -26,7 +26,7 @@
     </v-col>
 
     <div v-if="dataProducts.length > 0">
-      <h1>Product History</h1>
+      <h1>Shopping history</h1>
       <v-col cols="12">
         <v-simple-table>
           <template v-slot:default>
@@ -34,12 +34,14 @@
               <tr>
                 <th class="text-left">Buyer id</th>
                 <th class="text-left">Name</th>
+                <th class="text-left">Date</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, i) in dataProducts" :key="i">
                 <td>{{ item.product[0].product_id }}</td>
                 <td>{{ item.product[0].name }}</td>
+                <td>{{ item.product[0].date }}</td>
               </tr>
             </tbody>
           </template>
@@ -54,7 +56,7 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th class="text-left">Product id</th>
+                <th class="text-left">Buyer id</th>
                 <th class="text-left">Name</th>
               </tr>
             </thead>

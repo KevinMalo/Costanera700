@@ -2,6 +2,26 @@
   <v-container>
     <v-row align="center" justify="center">
       <v-form method="post" :action="`${url}${date}`">
+        <!-- <v-col cols="12">
+          <div>
+            <v-file-input
+              chips
+              multiple
+              label="Json buyers file"
+            ></v-file-input>
+            <v-file-input
+              chips
+              multiple
+              label="File input w/ chips"
+            ></v-file-input>
+            <v-file-input
+              chips
+              multiple
+              label="File input w/ chips"
+            ></v-file-input>
+            
+          </div>
+        </v-col> -->
         <v-col cols="12">
           <v-container class="grey lighten-5">
             <v-row no-gutters>
